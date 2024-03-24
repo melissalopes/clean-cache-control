@@ -1,6 +1,6 @@
 # package directories
 node_modules
-parckage-lock
+package-lock
 
 # environment variables
 .env

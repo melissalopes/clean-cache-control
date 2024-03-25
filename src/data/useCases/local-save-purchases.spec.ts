@@ -22,16 +22,30 @@ class CacheStoreSpy implements ICacheStore {
 }
 /* mock do que está em produção */
 
+type SutTypes = {
+  sut: LocalSavePurchases;
+  cacheStore: CacheStoreSpy;
+};
+
+/*  Design Patterns - Factory */
+const makeSut = (): SutTypes => {
+  const cacheStore = new CacheStoreSpy();
+  const sut = new LocalSavePurchases(cacheStore);
+  return {
+    sut,
+    cacheStore,
+  };
+};
+/*  Design Patterns - Factory */
+
 describe('LocalSavePurchases', () => {
   test('Should not delete cache on init', () => {
-    const cacheStore = new CacheStoreSpy();
-    new LocalSavePurchases(cacheStore);
+    const { cacheStore } = makeSut();
     expect(cacheStore.deleteCallsCount).toBe(0);
   });
 
   test('Should delete old cache on save', async () => {
-    const cacheStore = new CacheStoreSpy();
-    const sut = new LocalSavePurchases(cacheStore);
+    const { sut, cacheStore } = makeSut();
     await sut.save();
     expect(cacheStore.deleteCallsCount).toBe(1);
   });
